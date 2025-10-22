@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero bg-gradient-to-br from-pink-50 via-white to-purple-50 py-24 relative overflow-hidden">
+    <div class="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center relative z-10 min-h-[70vh] gap-12">
+        <div class="lg:w-5/12 mb-12 lg:mb-0">
+            <div class="flex items-center mb-8">
+                <div class="bg-gradient-to-r from-pink-500 to-purple-600 p-4 rounded-2xl shadow-lg mr-6">
+                    <img src="{{ url_for('static', filename='logo_otak-removebg-preview.png') }}" alt="MindCare Logo" class="w-12 h-12 object-contain">
+                </div>
+                <h1 class="text-5xl font-black bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                    MindCare
+                </h1>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 leading-tight">
+                Prediksi Risiko dan Pencegahan <span class="text-pink-600">Alzheimer</span>
+            </h2>
+            <p class="text-lg text-gray-600 mb-10 leading-relaxed max-w-lg">
+                Solusi teknologi untuk pemantauan kesehatan otak yang praktis.
+.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                <a href="/prediksi" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-3 rounded-full font-semibold text-base shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center">
+                    <span class="mr-2"></span> Prediksi Alzheimer
+                </a>
+                <a href="#features" class="border-2 border-pink-500 text-pink-600 px-8 py-3 rounded-full font-semibold text-base hover:bg-pink-50 transition-all duration-300">
+                    Pelajari Lebih Lanjut
+                </a>
+            </div>
+
+        </div>
+        <div class="lg:w-5/12 flex justify-center items-center">
+            <div class="relative max-w-md">
+                <div class="absolute -top-8 -left-8 w-56 h-56 bg-pink-0 rounded-full opacity-0 animate-pulse"></div>
+                <div class="absolute -bottom-8 -right-8 w-44 h-44 bg-purple-0 rounded-full opacity-0 animate-pulse delay-1000"></div>
+                <img src="https://img.freepik.com/premium-photo/technology-artificial-intelligence-ai-brain-animation-digital-data-concept-big-data-flow-analysis-deep-learning-modern-generative-ai_595532-832.jpg" alt="Brain Health" class="relative z-10 rounded-3xl shadow-2xl w-full h-auto transform hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-pink-500/20 to-transparent rounded-3xl"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="py-24 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Mengapa MindCare?</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">MindCare merupakan website untuk memprediksi dan pencegahan penyakit Alzheimer dengan menggunakan Machine Learning. </p>
+        </div>
+
+        
+     <!-- Process Flow -->
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-12">
+                <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Bagaimana Cara Kerjanya?</h2>
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="bg-gradient-to-br from-blue-400 to-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-white">
+                            <span class="text-xl font-bold">1</span>
+                        </div>
+                        <h3 class="font-semibold mb-2 text-gray-800">Data Collection</h3>
+                        <p class="text-sm text-gray-600">Mengumpulkan data kesehatan pasien dengan fitur-fitur yang relevan</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-gradient-to-br from-green-400 to-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-white">
+                            <span class="text-xl font-bold">2</span>
+                        </div>
+                        <h3 class="font-semibold mb-2 text-gray-800">Preprocessing</h3>
+                        <p class="text-sm text-gray-600">Imputasi missing values dengan mean, feature scaling dengan StandardScaler, dan SMOTE untuk balancing data</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-gradient-to-br from-purple-400 to-purple-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-white">
+                            <span class="text-xl font-bold">3</span>
+                        </div>
+                        <h3 class="font-semibold mb-2 text-gray-800">Model Training</h3>
+                        <p class="text-sm text-gray-600">Random Forest dengan 100 trees, random_state=42</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-gradient-to-br from-red-400 to-red-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-white">
+                            <span class="text-xl font-bold">4</span>
+                        </div>
+                        <h3 class="font-semibold mb-2 text-gray-800">Deployment</h3>
+                        <p class="text-sm text-gray-600">Model di-deploy dalam web app untuk prediksi real-time</p>
+                    </div>
+                </div>
+            </div>
+    </div>
+</section>
+{% endblock %}

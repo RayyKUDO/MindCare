@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediksi Risiko Alzheimer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="card-title mb-0">🧠 Sistem Prediksi Risiko Alzheimer</h1>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">Masukkan data pasien untuk prediksi risiko Alzheimer menggunakan Machine Learning SVM.</p>
+                        <form action="/predict" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="photo" class="form-label">Upload Foto Pasien (Opsional):</label>
+                                <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="age" class="form-label">Usia:</label>
+                                    <input type="number" class="form-control" id="age" name="age" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="gender" class="form-label">Jenis Kelamin (0=Laki-laki, 1=Perempuan):</label>
+                                    <input type="number" class="form-control" id="gender" name="gender" min="0" max="1" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="education" class="form-label">Pendidikan (tahun):</label>
+                                    <input type="number" class="form-control" id="education" name="education" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="bmi" class="form-label">BMI:</label>
+                                    <input type="number" step="0.1" class="form-control" id="bmi" name="bmi" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="smoking" class="form-label">Merokok (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="smoking" name="smoking" min="0" max="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="alcohol" class="form-label">Konsumsi Alkohol:</label>
+                                    <input type="number" step="0.1" class="form-control" id="alcohol" name="alcohol" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="physical_activity" class="form-label">Aktivitas Fisik:</label>
+                                    <input type="number" step="0.1" class="form-control" id="physical_activity" name="physical_activity" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="diet_quality" class="form-label">Kualitas Diet:</label>
+                                    <input type="number" step="0.1" class="form-control" id="diet_quality" name="diet_quality" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="sleep_quality" class="form-label">Kualitas Tidur:</label>
+                                    <input type="number" step="0.1" class="form-control" id="sleep_quality" name="sleep_quality" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="family_history" class="form-label">Riwayat Keluarga Alzheimer (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="family_history" name="family_history" min="0" max="1" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cardiovascular" class="form-label">Penyakit Kardiovaskular (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="cardiovascular" name="cardiovascular" min="0" max="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="diabetes" class="form-label">Diabetes (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="diabetes" name="diabetes" min="0" max="1" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="depression" class="form-label">Depresi (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="depression" name="depression" min="0" max="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="head_injury" class="form-label">Cedera Kepala (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="head_injury" name="head_injury" min="0" max="1" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="hypertension" class="form-label">Hipertensi (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="hypertension" name="hypertension" min="0" max="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="systolic_bp" class="form-label">Tekanan Darah Sistolik:</label>
+                                    <input type="number" class="form-control" id="systolic_bp" name="systolic_bp" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="diastolic_bp" class="form-label">Tekanan Darah Diastolik:</label>
+                                    <input type="number" class="form-control" id="diastolic_bp" name="diastolic_bp" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cholesterol_total" class="form-label">Kolesterol Total:</label>
+                                    <input type="number" step="0.1" class="form-control" id="cholesterol_total" name="cholesterol_total" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cholesterol_ldl" class="form-label">Kolesterol LDL:</label>
+                                    <input type="number" step="0.1" class="form-control" id="cholesterol_ldl" name="cholesterol_ldl" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cholesterol_hdl" class="form-label">Kolesterol HDL:</label>
+                                    <input type="number" step="0.1" class="form-control" id="cholesterol_hdl" name="cholesterol_hdl" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cholesterol_triglycerides" class="form-label">Kolesterol Triglycerides:</label>
+                                    <input type="number" step="0.1" class="form-control" id="cholesterol_triglycerides" name="cholesterol_triglycerides" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="mmse" class="form-label">MMSE (Mini-Mental State Examination):</label>
+                                    <input type="number" step="0.1" class="form-control" id="mmse" name="mmse" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="functional_assessment" class="form-label">Penilaian Fungsional:</label>
+                                    <input type="number" step="0.1" class="form-control" id="functional_assessment" name="functional_assessment" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="memory_complaints" class="form-label">Keluhan Memori (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="memory_complaints" name="memory_complaints" min="0" max="1" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="behavioral_problems" class="form-label">Masalah Perilaku (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="behavioral_problems" name="behavioral_problems" min="0" max="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="adl" class="form-label">Aktivitas Sehari-hari (ADL):</label>
+                                    <input type="number" step="0.1" class="form-control" id="adl" name="adl" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="confusion" class="form-label">Konfusi (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="confusion" name="confusion" min="0" max="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="disorientation" class="form-label">Disorientasi (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="disorientation" name="disorientation" min="0" max="1" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="personality_changes" class="form-label">Perubahan Kepribadian (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="personality_changes" name="personality_changes" min="0" max="1" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="difficulty_tasks" class="form-label">Kesulitan Menyelesaikan Tugas (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="difficulty_tasks" name="difficulty_tasks" min="0" max="1" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="forgetfulness" class="form-label">Lupa (0=Tidak, 1=Ya):</label>
+                                    <input type="number" class="form-control" id="forgetfulness" name="forgetfulness" min="0" max="1" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg w-100">Prediksi Risiko Alzheimer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+        </form>
+    </div>
+</body>
+</html>

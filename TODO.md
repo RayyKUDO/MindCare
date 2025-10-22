@@ -1,0 +1,6 @@
+- [x] Modify templates/prevention.html to hide risk assessment and personalized prevention plan if no predictions, show only daily tips
+- [x] Change localStorage to sessionStorage for predictions in hasil.html and prevention.html to avoid persisting across sessions
+- [ ] Fix ML implementation to match train_model.py
+  - [ ] Update app.py to use dynamic metadata from combined_model_meta.json
+  - [ ] Update templates/implementasi.html to display actual model metrics
+  - [ ] Update predict_test.py to use combined model with correct thresholds

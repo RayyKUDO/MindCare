@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-cover bg-center opacity-10" style="background-image: url('https://img.freepik.com/premium-photo/technology-artificial-intelligence-ai-brain-animation-digital-data-concept-big-data-flow-analysis-deep-learning-modern-generative-ai_595532-832.jpg');"></div>
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-2xl mx-auto text-center">
+            <!-- Error Icon -->
+            <div class="mb-8">
+                <div class="bg-red-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto">
+                    <svg class="w-12 h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Terjadi Kesalahan</h1>
+            
+            <div class="bg-red-50 border border-red-200 rounded-xl p-6 mb-8">
+                <p class="text-red-800 text-lg mb-4">{{ error_message }}</p>
+                <p class="text-red-700">Silakan coba lagi atau hubungi administrator jika masalah berlanjut.</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/prediksi" class="btn-primary py-3 px-6 rounded-lg font-semibold hover:bg-pink-700 transition-colors">
+                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Kembali ke Form Prediksi
+                </a>
+                
+                <a href="/" class="bg-gray-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-700 transition-colors">
+                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Kembali ke Beranda
+                </a>
+            </div>
+
+            <!-- Technical Details (for debugging) -->
+            {% if config.DEBUG %}
+            <div class="mt-8 p-4 bg-gray-100 rounded-lg text-left">
+                <h3 class="font-semibold text-gray-800 mb-2">Detail Teknis (Debug Mode):</h3>
+                <p class="text-sm text-gray-600">Error terjadi saat memproses data input. Pastikan semua field telah diisi dengan benar.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

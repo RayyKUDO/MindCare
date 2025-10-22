@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-cover bg-center opacity-10" style="background-image: url('https://img.freepik.com/premium-photo/technology-artificial-intelligence-ai-brain-animation-digital-data-concept-big-data-flow-analysis-deep-learning-modern-generative-ai_595532-832.jpg');"></div>
+    <div class="container mx-auto px-4 relative z-10">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-12">Rencana Pencegahan Alzheimer</h1>
+
+        <!-- Risk Assessment -->
+        <div class="max-w-4xl mx-auto mb-12">
+            <div class="card p-8">
+                <h2 class="text-2xl font-bold mb-6">Penilaian Risiko Anda</h2>
+                <div id="riskAssessment" class="text-center">
+                    <p class="text-gray-500">Lakukan prediksi terlebih dahulu untuk mendapatkan rencana yang dipersonalisasi</p>
+                    <a href="/prediksi" class="btn-primary px-6 py-3 rounded-full font-semibold mt-4 inline-block">Mulai Prediksi</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personalized Prevention Plan -->
+        <div class="max-w-4xl mx-auto mb-12">
+            <div class="card p-8">
+                <h2 class="text-2xl font-bold mb-6">Rencana Pencegahan yang Dipersonalisasi</h2>
+                <div id="preventionPlan" class="space-y-6">
+                    <!-- Default plan when no risk data -->
+                    <div class="text-center text-gray-500">
+                        <p>Rencana pencegahan akan disesuaikan berdasarkan hasil prediksi risiko Anda</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Daily Tips -->
+        <div class="max-w-4xl mx-auto mb-12">
+            <div class="card p-8">
+                <h2 class="text-2xl font-bold mb-6">Tips Pencegahan Hari Ini</h2>
+                <div id="dailyTips" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-blue-800 mb-3">Aktivitas Fisik</h3>
+                        <p class="text-blue-700 text-sm">Jalan kaki selama 20-30 menit dapat meningkatkan aliran darah ke otak dan merangsang produksi sel saraf baru.</p>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-green-800 mb-3">Diet Sehat</h3>
+                        <p class="text-green-700 text-sm">Konsumsi kacang-kacangan, dan sayuran hijau yang kaya antioksidan, dan melakukan beberapa diet seperti diet mediterania.</p>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-purple-800 mb-3">Stimulasi Otak</h3>
+                        <p class="text-purple-700 text-sm">Main puzzle, membaca buku, atau belajar bahasa baru dapat membangun 'cadangan kognitif' otak.</p>
+                    </div>
+                    <div class="bg-pink-50 p-6 rounded-lg">
+                        <h3 class="font-semibold text-pink-800 mb-3">Kualitas Tidur</h3>
+                        <p class="text-pink-700 text-sm">Tidur yang cukup dan berkualitas membantu otak memproses memori dan menghilangkan toksin yang menumpuk.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<script>
+    window.predictions = {{ predictions|tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/prevention.js') }}"></script>
+
+<!-- Call to Action for Education -->
+<div class="max-w-4xl mx-auto mt-12">
+    <div class="card p-8">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Pelajari Lebih Lanjut Tentang Alzheimer</h2>
+        <p class="text-gray-600 mb-6 text-center">Dapatkan informasi lengkap tentang penyakit Alzheimer, gejala, faktor risiko, dan langkah pencegahan yang dapat Anda lakukan.</p>
+        <div class="flex justify-center space-x-4">
+            <a href="/edukasi" class="btn-primary px-8 py-3 rounded-full font-semibold inline-block hover:bg-opacity-90 transition duration-300">
+                Pelajari Selengkapnya
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

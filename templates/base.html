@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindCare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #fce4ec 0%, #ffffff 100%); }
+        .btn-primary { background: #B23A74; color: white; }
+        .btn-primary:hover { background: #9c2d62; }
+        .card { background: white; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .nav-bar { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #e5e7eb; }
+        .nav-link { transition: all 0.3s ease; font-size: 0.875rem; }
+        .nav-link:hover { background: #fce4ec; color: #B23A74; }
+        .nav-link.active { background: #B23A74; color: white; }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="nav-bar fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center py-4 px-4">
+            <div class="flex items-center">
+                <div class="bg-gradient-to-r from-pink-500 to-purple-600 p-3 rounded-xl mr-3">
+                    <img src="{{ url_for('static', filename='logo_otak-removebg-preview.png') }}" alt="MindCare Logo" class="w-8 h-8 object-contain">
+                </div>
+                <h1 class="text-xl font-bold text-gray-800">MindCare</h1>
+            </div>
+
+            <div class="hidden md:flex space-x-6">
+                <a href="/" class="nav-link px-4 py-2 rounded-lg" id="nav-beranda">Beranda</a>
+
+                <a href="/prediksi" class="nav-link px-4 py-2 rounded-lg" id="nav-prediksi">Prediksi Alzheimer</a>
+                <a href="/prevention" class="nav-link px-4 py-2 rounded-lg" id="nav-prevention">Pencegahan</a>
+                <a href="/edukasi" class="nav-link px-4 py-2 rounded-lg" id="nav-edukasi">Edukasi</a>
+                <a href="/implementasi" class="nav-link px-4 py-2 rounded-lg" id="nav-implementasi">Implementasi ML</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-btn" class="bg-white p-2 rounded-lg shadow-lg">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-4 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
+                <a href="/" class="nav-link block px-3 py-2 rounded-md text-base font-medium" id="nav-beranda-mobile">Beranda</a>
+
+                <a href="/prediksi" class="nav-link block px-3 py-2 rounded-md text-base font-medium" id="nav-prediksi-mobile">Prediksi Alzheimer</a>
+                <a href="/prevention" class="nav-link block px-3 py-2 rounded-md text-base font-medium" id="nav-prevention-mobile">Pencegahan</a>
+                <a href="/edukasi" class="nav-link block px-3 py-2 rounded-md text-base font-medium" id="nav-edukasi-mobile">Edukasi</a>
+                <a href="/implementasi" class="nav-link block px-3 py-2 rounded-md text-base font-medium" id="nav-implementasi-mobile">Implementasi ML</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-20">
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="bg-pink-700 text-white py-8 mt-16">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2025 MindCare.</p>
+                <p>Data pribadi Anda aman.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Active link highlighting
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
