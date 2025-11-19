@@ -95,8 +95,8 @@ print(f'🔍 Probabilitas risiko Alzheimer: {prob:.4f} ({pct:.2f}%)')
 
 # Kategori risiko berdasarkan threshold dari metadata
 if USE_FIXED_BINS:
-    FIXED_LOW_MAX = META.get('fixed_low_max', 40)
-    FIXED_HIGH_MAX = META.get('fixed_high_max', 80)
+    FIXED_LOW_MAX = META.get('fixed_low_max', 30)
+    FIXED_HIGH_MAX = META.get('fixed_high_max', 70)
     if pct >= (FIXED_HIGH_MAX + 1):
         prediction = 'Tinggi'
     elif pct >= (FIXED_LOW_MAX + 1):

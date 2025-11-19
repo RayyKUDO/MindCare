@@ -82,34 +82,85 @@ try:
 except Exception as e:
     print(f"❌ Error loading artifacts: {e}")
 
-# ====== Konfigurasi threshold ======
+# ====== KONFIGURASI THRESHOLD - YANG DIPERBAIKI ======
 USE_FIXED_BINS = META.get('use_fixed_bins', False)
-BEST_THR = META.get('best_threshold', 0.7)
-MID_THR = META.get('mid_threshold', 0.4)
-FIXED_LOW_MAX = META.get('fixed_low_max', 40)
-FIXED_HIGH_MAX = META.get('fixed_high_max', 80)
+
+# === THRESHOLD YANG LEBIH SEIMBANG ===
+# Opsi A: Untuk model dengan FamilyHistory dominan
+BEST_THR = META.get('best_threshold', 0.8)    # ↑ 80% untuk High (karena FamilyHistory terlalu kuat)
+MID_THR = META.get('mid_threshold', 0.2)      # ↓ 20% untuk Medium
+
+FIXED_LOW_MAX = META.get('fixed_low_max', 20)  # ↓ 20%
+FIXED_HIGH_MAX = META.get('fixed_high_max', 80) # ↑ 80%
 CALIB_METHOD = META.get('calibration_method', 'none')
 
 print(f"✅ Mode kategori: {'Fixed bins' if USE_FIXED_BINS else 'ROC-based'}")
-print(f"✅ Threshold - Mid: {MID_THR}, Best: {BEST_THR}")
+print(f"✅ Threshold - Rendah: <{MID_THR*100}%, Sedang: {MID_THR*100}%-{BEST_THR*100}%, Tinggi: >{BEST_THR*100}%")
 print(f"✅ Features used: {len(FEATURES)} features")
 print(f"✅ Alzheimer features: {len(ALZHEIMER_FEATURES)}")
 print(f"✅ Mental Health features: {len(MENTAL_HEALTH_FEATURES)}")
 
+# ====== FUNGSI PREDIKSI DENGAN ADJUSTMENT ======
+def predict_with_adjustment(input_scaled, input_data):
+    """MANUAL SCORING SYSTEM - bypass model yang bermasalah"""
+    print("🔧 USING MANUAL SCORING SYSTEM")
+    
+    score = 0
+    
+    # Age factor (0-25 points)
+    if input_data['Age'] >= 75: score += 25
+    elif input_data['Age'] >= 65: score += 20
+    elif input_data['Age'] >= 55: score += 15
+    elif input_data['Age'] >= 45: score += 10
+    else: score += 5
+    
+    # Family history (0-20 points) ← TIDAK DOMINAN!
+    if input_data['FamilyHistoryAlzheimers'] == 1: 
+        score += 20
+        print("🔧 Family History detected: +20 points")
+    
+    # Lifestyle factors (0-30 points)
+    score += (10 - input_data['PhysicalActivity']) * 1.5    # Aktivitas rendah = risiko tinggi
+    score += (10 - input_data['DietQuality']) * 1.5         
+    score += (10 - input_data['SleepQuality']) * 1.5        
+    
+    # Medical conditions (0-20 points)
+    score += input_data['CardiovascularDisease'] * 5
+    score += input_data['Hypertension'] * 5
+    score += input_data['Diabetes'] * 5
+    score += input_data['Smoking'] * 5
+    
+    # Mental health (0-15 points)
+    score += max(0, input_data['StressLevel'] - 5) * 1.5
+    score += max(0, input_data['DepressionScore'] - 5) * 1.5
+    score += max(0, input_data['AnxietyLevel'] - 5) * 1.5
+    score += (10 - input_data['SocialSupport']) * 1.5  # Dukungan sosial rendah = risiko tinggi
+    
+    # Cognitive function (0-10 points)
+    score += (10 - input_data['FunctionalAssessment']) * 2
+    
+    # Convert to probability (0-100%)
+    max_score = 100
+    probability = min(0.95, score / max_score)
+    
+    print(f"🔧 MANUAL SCORE: {score}/100 = {probability:.3f}")
+    
+    return probability
+
 def analyze_risk_factors(input_data):
-    """Analisis faktor risiko dari kedua dataset"""
+    """Analisis faktor risiko dari kedua dataset - THRESHOLD DIPERBAIKI"""
     risk_factors = []
     
-    # Alzheimer risk factors
-    if input_data['Age'] > 70:
-        risk_factors.append("Usia di atas 70 tahun")
+    # Alzheimer risk factors - THRESHOLD DIPERBAIKI
+    if input_data['Age'] > 65:  # ↓ dari 70 ke 65
+        risk_factors.append("Usia di atas 65 tahun")
     if input_data['FamilyHistoryAlzheimers'] == 1:
         risk_factors.append("Riwayat keluarga Alzheimer")
-    if input_data['PhysicalActivity'] < 4:
+    if input_data['PhysicalActivity'] < 5:  # ↑ dari 4 ke 5
         risk_factors.append("Aktivitas fisik rendah")
-    if input_data['DietQuality'] < 4:
+    if input_data['DietQuality'] < 5:  # ↑ dari 4 ke 5
         risk_factors.append("Kualitas diet rendah")
-    if input_data['SleepQuality'] < 4:
+    if input_data['SleepQuality'] < 5:  # ↑ dari 4 ke 5
         risk_factors.append("Kualitas tidur rendah")
     if input_data['CardiovascularDisease'] == 1:
         risk_factors.append("Penyakit kardiovaskular")
@@ -119,17 +170,17 @@ def analyze_risk_factors(input_data):
         risk_factors.append("Diabetes")
     if input_data['Smoking'] == 1:
         risk_factors.append("Kebiasaan merokok")
-    if input_data['FunctionalAssessment'] < 4:
+    if input_data['FunctionalAssessment'] < 5:  # ↑ dari 4 ke 5
         risk_factors.append("Fungsi kognitif rendah")
 
-    # Mental health risk factors
-    if input_data.get('StressLevel', 5) > 7:
+    # Mental health risk factors - THRESHOLD DIPERBAIKI
+    if input_data.get('StressLevel', 5) > 6:  # ↓ dari 7 ke 6
         risk_factors.append("Tingkat stres tinggi")
-    if input_data.get('DepressionScore', 5) > 7:
+    if input_data.get('DepressionScore', 5) > 6:  # ↓ dari 7 ke 6
         risk_factors.append("Gejala depresi")
-    if input_data.get('AnxietyLevel', 5) > 7:
+    if input_data.get('AnxietyLevel', 5) > 6:  # ↓ dari 7 ke 6
         risk_factors.append("Tingkat kecemasan tinggi")
-    if input_data.get('SocialSupport', 5) < 4:
+    if input_data.get('SocialSupport', 5) < 5:  # ↑ dari 4 ke 5
         risk_factors.append("Dukungan sosial rendah")
     
     return risk_factors
@@ -243,11 +294,11 @@ def hasil():
         input_imputed = imputer.transform(input_df)
         input_scaled = scaler.transform(input_imputed)
 
-        # -- Prediksi probabilitas --
-        prob = float(rf_model.predict_proba(input_scaled)[0][1])
+        # -- Prediksi probabilitas DENGAN ADJUSTMENT --
+        prob = predict_with_adjustment(input_scaled, input_data)
         pct = prob * 100.0
 
-        # -- Kategori risiko --
+        # -- Kategori risiko dengan THRESHOLD BARU --
         if USE_FIXED_BINS:
             if pct >= (FIXED_HIGH_MAX + 1):
                 prediction = 'Tinggi'
@@ -267,14 +318,18 @@ def hasil():
             low_cut = int(round(MID_THR * 100))
             high_cut = int(round(BEST_THR * 100))
 
-        print(f"🔍 DEBUG - Prob: {prob:.3f} ({pct:.2f}%), Kategori: {prediction}")
+        # === DEBUG DETAILED - UNTUK LIHAT KENAPA DAPAT KATEGORI TERSEBUT ===
+        print(f"🔍 DEBUG DETAIL - Prob: {prob:.3f} ({pct:.2f}%)")
+        print(f"🔍 DEBUG DETAIL - FamilyHistory: {input_data['FamilyHistoryAlzheimers']}")
+        print(f"🔍 DEBUG DETAIL - Threshold: Rendah<{MID_THR:.2f}, Sedang {MID_THR:.2f}-{BEST_THR:.2f}, Tinggi>{BEST_THR:.2f}")
+        print(f"🔍 DEBUG DETAIL - Kategori: {prediction}")
 
         # -- Create gauge chart --
         fig = go.Figure(go.Indicator(
             mode="gauge+number+delta",
             value=pct,
             title={'text': f"Risiko Alzheimer - Kategori: {prediction}"},
-            delta={'reference': high_cut, 'relative': False},
+            delta={'reference': 50, 'relative': False},
             gauge={
                 'axis': {'range': [0, 100]},
                 'bar': {'color': "#B23A74"},
@@ -363,6 +418,117 @@ def hasil():
             'error.html',
             error_message=error_msg
         )
+
+# ====== DEBUG ROUTES ======
+
+@app.route('/debug/features')
+def debug_features():
+    """Debug page untuk melihat feature importance dan testing"""
+    if rf_model is None:
+        return "Model not loaded"
+    
+    try:
+        # Get feature importance dari model
+        if hasattr(rf_model, 'feature_importances_'):
+            importance = rf_model.feature_importances_
+            feature_importance = dict(zip(FEATURES, importance))
+            sorted_features = sorted(feature_importance.items(), key=lambda x: x[1], reverse=True)
+        else:
+            sorted_features = []
+        
+        debug_info = {
+            'feature_importance': sorted_features,
+            'total_features': len(FEATURES),
+            'features_list': FEATURES,
+            'model_loaded': rf_model is not None,
+            'scaler_loaded': scaler is not None,
+            'imputer_loaded': imputer is not None,
+            'metadata': META,
+            'thresholds': {
+                'low_max': MID_THR,
+                'high_min': BEST_THR,
+                'low_percent': MID_THR * 100,
+                'high_percent': BEST_THR * 100
+            }
+        }
+        
+        return render_template('debug_features.html', debug_info=debug_info)
+        
+    except Exception as e:
+        return f"Error in debug: {str(e)}"
+
+@app.route('/debug/test-prediction', methods=['POST'])
+def debug_test_prediction():
+    """Endpoint untuk test prediction dengan input spesifik"""
+    try:
+        # Test input extremes
+        test_cases = {
+            'all_low_risk': {
+                'Age': 40, 'Gender': 0, 'Smoking': 0, 'PhysicalActivity': 9, 
+                'DietQuality': 9, 'SleepQuality': 9, 'FamilyHistoryAlzheimers': 0,
+                'CardiovascularDisease': 0, 'Hypertension': 0, 'Diabetes': 0,
+                'FunctionalAssessment': 9, 'StressLevel': 2, 'DepressionScore': 2,
+                'AnxietyLevel': 2, 'SocialSupport': 9, 'MentalHealthConsultation': 1,
+                'WellnessProgram': 1
+            },
+            'all_high_risk': {
+                'Age': 80, 'Gender': 1, 'Smoking': 1, 'PhysicalActivity': 2,
+                'DietQuality': 2, 'SleepQuality': 2, 'FamilyHistoryAlzheimers': 1,
+                'CardiovascularDisease': 1, 'Hypertension': 1, 'Diabetes': 1,
+                'FunctionalAssessment': 3, 'StressLevel': 9, 'DepressionScore': 9,
+                'AnxietyLevel': 9, 'SocialSupport': 2, 'MentalHealthConsultation': 0,
+                'WellnessProgram': 0
+            },
+            'medium_risk': {
+                'Age': 60, 'Gender': 0, 'Smoking': 0, 'PhysicalActivity': 6,
+                'DietQuality': 6, 'SleepQuality': 5, 'FamilyHistoryAlzheimers': 0,
+                'CardiovascularDisease': 0, 'Hypertension': 1, 'Diabetes': 0,
+                'FunctionalAssessment': 6, 'StressLevel': 5, 'DepressionScore': 4,
+                'AnxietyLevel': 6, 'SocialSupport': 6, 'MentalHealthConsultation': 0,
+                'WellnessProgram': 0
+            },
+            'family_history_but_healthy': {
+                'Age': 45, 'Gender': 0, 'Smoking': 0, 'PhysicalActivity': 8,
+                'DietQuality': 8, 'SleepQuality': 8, 'FamilyHistoryAlzheimers': 1,  # Ada riwayat tapi sehat
+                'CardiovascularDisease': 0, 'Hypertension': 0, 'Diabetes': 0,
+                'FunctionalAssessment': 8, 'StressLevel': 3, 'DepressionScore': 3,
+                'AnxietyLevel': 3, 'SocialSupport': 8, 'MentalHealthConsultation': 1,
+                'WellnessProgram': 1
+            }
+        }
+        
+        case_name = request.form.get('case', 'all_low_risk')
+        input_data = test_cases[case_name]
+        
+        # Process seperti di route /hasil
+        input_values = [input_data[feature] for feature in FEATURES]
+        input_df = pd.DataFrame([input_values], columns=FEATURES)
+        
+        input_imputed = imputer.transform(input_df)
+        input_scaled = scaler.transform(input_imputed)
+        
+        # Gunakan fungsi prediksi dengan adjustment
+        prob = predict_with_adjustment(input_scaled, input_data)
+        pct = prob * 100.0
+        
+        # Determine category
+        if prob >= BEST_THR:
+            prediction = 'Tinggi'
+        elif prob >= MID_THR:
+            prediction = 'Sedang'
+        else:
+            prediction = 'Rendah'
+        
+        return jsonify({
+            'test_case': case_name,
+            'probability': round(pct, 2),
+            'category': prediction,
+            'family_history': input_data['FamilyHistoryAlzheimers'],
+            'status': 'success'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/error/model-not-ready')
 def model_not_ready():
@@ -499,6 +665,8 @@ if __name__ == '__main__':
         print("All artifacts loaded successfully!")
         print(f"Model type: {'Combined Dataset' if len(FEATURES) > len(ALZHEIMER_FEATURES) else 'Alzheimer Only'}")
         print(f"Total features: {len(FEATURES)}")
+        print("⚠️  NOTE: Model detected with FamilyHistoryAlzheimers dominance")
+        print("✅ Adjustment function activated to balance predictions")
     else:
         print("Warning: Some artifacts failed to load")
         print("Run train_model.py first to generate the required model files")

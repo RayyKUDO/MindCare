@@ -36,8 +36,10 @@
   "auc_combined": 1.0,
   "auc_alzheimer_only": 1.0,
   "best_threshold": 0.7,
-  "mid_threshold": 0.4,
-  "use_fixed_bins": false,
+  "mid_threshold": 0.3,
+  "use_fixed_bins": true,
+  "fixed_low_max": 30,
+  "fixed_high_max": 70,
   "calibration_method": "none",
   "data_count": 17,
   "training_date": "2025-10-21T10:42:55.205036"

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Features</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .feature { margin: 10px 0; padding: 10px; background: #f5f5f5; }
+        .high { background: #ffcccc; }
+        .medium { background: #fffacd; }
+        .low { background: #ccffcc; }
+        .test-case { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Debug Feature Importance</h1>
+    
+    <h2>Model Status</h2>
+    <p>Model Loaded: {{ debug_info.model_loaded }}</p>
+    <p>Scaler Loaded: {{ debug_info.scaler_loaded }}</p>
+    <p>Imputer Loaded: {{ debug_info.imputer_loaded }}</p>
+    <p>Total Features: {{ debug_info.total_features }}</p>
+    
+    <h2>Threshold Settings</h2>
+    <p>Rendah: < {{ "%.1f"|format(debug_info.thresholds.low_percent) }}%</p>
+    <p>Sedang: {{ "%.1f"|format(debug_info.thresholds.low_percent) }}% - {{ "%.1f"|format(debug_info.thresholds.high_percent) }}%</p>
+    <p>Tinggi: > {{ "%.1f"|format(debug_info.thresholds.high_percent) }}%</p>
+    
+    <h2>Feature Importance</h2>
+    {% if debug_info.feature_importance %}
+        {% for feature, importance in debug_info.feature_importance %}
+            <div class="feature 
+                {% if importance > 0.1 %}high
+                {% elif importance > 0.05 %}medium
+                {% else %}low
+                {% endif %}">
+                <strong>{{ feature }}</strong>: {{ "%.4f"|format(importance) }}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No feature importance data available</p>
+    {% endif %}
+    
+    <h2>Test Prediction</h2>
+    <div class="test-case">
+        <h3>Test Cases</h3>
+        <form action="/debug/test-prediction" method="post">
+            <button type="submit" name="case" value="all_low_risk">Test Low Risk Case</button>
+            <button type="submit" name="case" value="medium_risk">Test Medium Risk Case</button>
+            <button type="submit" name="case" value="all_high_risk">Test High Risk Case</button>
+        </form>
+    </div>
+    
+    <h2>Features List (Order Matters!)</h2>
+    <ol>
+        {% for feature in debug_info.features_list %}
+            <li>{{ feature }}</li>
+        {% endfor %}
+    </ol>
+    
+    <a href="/">Kembali ke Beranda</a>
+    
+    <script>
+        // JavaScript untuk handle test prediction results
+        document.querySelector('form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const caseName = formData.get('case');
+            
+            try {
+                const response = await fetch('/debug/test-prediction', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert(`Test Case: ${result.test_case}\nProbability: ${result.probability}%\nCategory: ${result.category}`);
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error);
+            }
+        });
+    </script>
+</body>
+</html>

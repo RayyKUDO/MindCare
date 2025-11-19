@@ -65,7 +65,7 @@ class AlzheimerModelTrainer:
         
         # Create target variable based on risk factors
         risk_score = (
-            (df['Age'] > 70) * 2 +
+            (df['Age'] > 65) * 2 +
             (df['FamilyHistoryAlzheimers'] == 1) * 3 +
             (df['PhysicalActivity'] < 4) * 2 +
             (df['DietQuality'] < 4) * 2 +
@@ -183,12 +183,16 @@ class AlzheimerModelTrainer:
     
     def _find_target_column(self, df):
         """Find target column automatically"""
+        # Prioritize 'Diagnosis' column if it exists
+        if 'Diagnosis' in df.columns:
+            return 'Diagnosis'
+
         target_keywords = ['alzheimer', 'diagnosis', 'status', 'target', 'class', 'dementia', 'result', 'risk']
-        
+
         for col in df.columns:
             if any(keyword in col.lower() for keyword in target_keywords):
                 return col
-        
+
         # Jika tidak ditemukan, gunakan kolom terakhir
         return df.columns[-1]
     
@@ -401,8 +405,10 @@ class AlzheimerModelTrainer:
             'auc_combined': self.results.get('Combined', {}).get('auc', 0),
             'auc_alzheimer_only': self.results.get('Alzheimer_Only', {}).get('auc', 0),
             'best_threshold': 0.7,
-            'mid_threshold': 0.4,
-            'use_fixed_bins': False,
+            'mid_threshold': 0.3,
+            'use_fixed_bins': True,
+            'fixed_low_max': 30,
+            'fixed_high_max': 70,
             'calibration_method': 'none',
             'data_count': len(self.results.get('Combined', {}).get('features', [])),
             'training_date': pd.Timestamp.now().isoformat()

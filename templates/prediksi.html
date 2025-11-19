@@ -135,11 +135,11 @@
                             </div>
                             <select name="sleep_quality" required class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all">
                                 <option value="">Pilih kualitas tidur</option>
-                                <option value="1" {% if previous_input and previous_input.sleep_quality == 1 %}selected{% endif %}>Sangat Buruk (1)</option>
-                                <option value="3" {% if previous_input and previous_input.sleep_quality == 3 %}selected{% endif %}>Buruk (3)</option>
-                                <option value="5" {% if previous_input and previous_input.sleep_quality == 5 %}selected{% endif %}>Sedang (5)</option>
-                                <option value="7" {% if previous_input and previous_input.sleep_quality == 7 %}selected{% endif %}>Baik (7)</option>
-                                <option value="10" {% if previous_input and previous_input.sleep_quality == 10 %}selected{% endif %}>Sangat Baik (10)</option>
+                                <option value="1" {% if previous_input and previous_input.sleep_quality == 1 %}selected{% endif %}>1-2 jam</option>
+                                <option value="3" {% if previous_input and previous_input.sleep_quality == 3 %}selected{% endif %}>2-3 jam</option>
+                                <option value="5" {% if previous_input and previous_input.sleep_quality == 5 %}selected{% endif %}>3-4 jam</option>
+                                <option value="7" {% if previous_input and previous_input.sleep_quality == 7 %}selected{% endif %}>4-5 jam</option>
+                                <option value="10" {% if previous_input and previous_input.sleep_quality == 10 %}selected{% endif %}>6-8 jam</option>
                             </select>
                         </div>
 
